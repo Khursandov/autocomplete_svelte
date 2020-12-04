@@ -3,33 +3,42 @@
 	import { getUsers } from "../store/index"; // import our pokemon api calls
     
   let users = [];
-  let selected = '';
+  
+  let list = []
+
+  let selected;
 
 	onMount(async () => {
     const res = await getUsers();
     users = res;
   });
 
-  const handleInput = (event) => {
-    console.log(event)
-		selected = users.find((user) => event.target.value === user.value);
-	}
+  const handleInput = () => {
+		list = users.filter((user) => user.name.toLowerCase().indexOf(selected.toLowerCase()) > -1);
+  }
+  const checkInput = () => {
+    if (!(users.find(x => x.name == selected))) selected = ''
+  }
+  const setValue = (payload) => {
+    selected = payload.name
+    list = []
+  }
 </script>
 
 <main>
 	<div>
-    { selected }
-    <input list=text_editors>
-    <button>▼</button>
-    <datalist id="text_editors">
-    <select multiple size=8 on:input="{handleInput}">
-        {#each users as user}
-          <option value={ user.id }>
+    <ul>
+      <li>
+      <input class="w-100" type="text" bind:value={ selected } on:input="{ handleInput }" on:blur="{ checkInput }">
+      </li>
+      <ul class="drop-down">
+        {#each list as user}
+      <li on:click="{ setValue(user) }">
             { user.name }
-          </option>
+          </li>
         {/each}
-      </select>
-    </datalist>
+      </ul>
+    </ul>
   </div>
 </main>
 
@@ -41,12 +50,26 @@
 		margin: 0 auto;
 	}
 
-	h1 {
-		color: #ff3e00;
-		text-transform: uppercase;
-		font-size: 4em;
-		font-weight: 100;
-	}
+  .w-100 {
+    width: 100%;
+  }
+
+  ul { 
+    width: 250px;
+  }
+  ul li {
+    list-style: none;
+  }
+  ul .drop-down {
+    box-shadow: 0px 0px 8px -1px rgba(0,0,0,0.1);
+    padding: 0;
+  }
+  .drop-down li {
+    padding: 5px;
+  }
+  .drop-down li:hover {
+    background: silver;
+  }
 
 	@media (min-width: 640px) {
 		main {
