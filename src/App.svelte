@@ -17,6 +17,7 @@
 		list = users.filter((user) => user.name.toLowerCase().indexOf(selected.toLowerCase()) > -1);
   }
   const checkInput = () => {
+    if (!selected.length) list = []
     if (!(users.find(x => x.name == selected))) selected = ''
   }
   const setValue = (payload) => {
